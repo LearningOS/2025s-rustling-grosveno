@@ -14,8 +14,8 @@ pub fn factorial(num: u64) -> u64 {
     // - recursion
     // Execute `rustlings hint iterators4` for hints.
     let a = 1..=num;
-    a.into_iter().
-        fold(1, |mut acc, x|{
+    a.into_iter()
+        .fold(1, |mut acc, x|{
             acc *= x;
             acc
         })
