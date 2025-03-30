@@ -3,7 +3,6 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -31,8 +30,12 @@ impl<T> Stack<T> {
 		self.size += 1;
 	}
 	fn pop(&mut self) -> Option<T> {
-		// TODO
-		None
+		if self.size == 0 {
+			None
+		} else {
+			self.size -= 1;
+			self.data.pop()
+		}
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -99,10 +102,44 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 	}
 }
 
-fn bracket_match(bracket: &str) -> bool
-{
-	//TODO
-	true
+fn bracket_match(bracket: &str) -> bool {
+    let mut stack = Stack::new();
+    
+    // 遍历字符串中的每个字符
+    for c in bracket.chars() {
+        match c {
+            // 遇到左括号时压栈
+            '(' | '[' | '{' => stack.push(c),
+            
+            // 遇到右括号时检查栈顶
+            ')' | ']' | '}' => {
+                // 栈为空时直接返回不匹配
+                let top = match stack.pop() {
+                    Some(t) => t,
+                    None => return false,
+                };
+                
+                // 检查括号是否成对
+                if !matches(top, c) {
+                    return false;
+                }
+            }
+            
+            // 非括号字符直接忽略
+            _ => continue,
+        }
+    }
+    
+    // 最终检查栈是否为空（防止左括号剩余）
+    stack.is_empty()
+}
+
+// 辅助函数判断括号配对
+fn matches(left: char, right: char) -> bool {
+    match (left, right) {
+        ('(', ')') | ('[', ']') | ('{', '}') => true,
+        _ => false,
+    }
 }
 
 #[cfg(test)]
